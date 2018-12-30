@@ -51,9 +51,9 @@ func (question *Question) RespondToQuestion(players []Player) ([]Response) {
 
 func (question *Question) Print(players []Player) {
 	questioner := players[question.QuestionerId].Name
-	character := GetItem(question.ItemIds[Character]).Name
-	weapon := GetItem(question.ItemIds[Weapon]).Name
-	room := GetItem(question.ItemIds[Room]).Name
+	character := GetItemName(question.ItemIds[Character])
+	weapon := GetItemName(question.ItemIds[Weapon])
+	room := GetItemName(question.ItemIds[Room])
 	responses := question.Responses
 	fmt.Printf("%s asks -- Is it %s with the %s in the %s?\n", questioner, character, weapon, room)
 	for _, response := range responses {
@@ -62,7 +62,7 @@ func (question *Question) Print(players []Player) {
 		if response.ItemShown == nil {
 			itemShown = "I can't disprove that"
 		} else {
-			itemShown = fmt.Sprintf("shows %s", GetItem(*response.ItemShown).Name)
+			itemShown = fmt.Sprintf("shows %s", GetItemName(*response.ItemShown))
 		}
 		fmt.Printf("%s responds -- %s\n", responder, itemShown)
 	}

@@ -8,14 +8,15 @@ type Player struct {
 	Id          PlayerId
 	Name        string
 	CharacterId ItemId
-	ItemIds     []ItemId
+	ItemIds     ItemIdList
+	deductions  Deductions
 }
 
 func (player Player) PoseQuestion() (*Question, error) {
-	character := GetRandomItem(Character).Id
-	weapon := GetRandomItem(Weapon).Id
-	room := GetRandomItem(Room).Id
-	return createQuestion(player.Id, []ItemId{character, weapon, room})
+	character := GetRandomItem(Character)
+	weapon := GetRandomItem(Weapon)
+	room := GetRandomItem(Room)
+	return createQuestion(player.Id, ItemIdList{character, weapon, room})
 }
 
 func (player Player) RespondToQuestion(question *Question) (*ItemId) {
@@ -30,7 +31,6 @@ func (player Player) RespondToQuestion(question *Question) (*ItemId) {
 }
 
 func (player Player) Print() {
-	fmt.Printf("%s holds ", player.Name)
-	PrintItems(player.ItemIds)
-	fmt.Println()
+	header := fmt.Sprintf("%s holds ", player.Name)
+	player.ItemIds.PrintItems(header, "\n")
 }
