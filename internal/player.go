@@ -9,7 +9,7 @@ type Player struct {
 	Name        string
 	CharacterId ItemId
 	ItemIds     ItemIdList
-	deductions  Deductions
+	//deductions  Deductions
 }
 
 func (player Player) PoseQuestion() (*Question, error) {

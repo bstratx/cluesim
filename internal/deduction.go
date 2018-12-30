@@ -1,6 +1,7 @@
 package internal
 
 type Deductions struct {
+	isEliminated []bool
 	playerItemMatrix PlayerItemMatrix
 }
 
@@ -52,7 +53,7 @@ func (matrix *PlayerItemMatrix) RecordPlayerHasItemList(playerId PlayerId, itemI
 }
 
 func (matrix *PlayerItemMatrix) RecordPlayerDoesntHaveItem(playerId PlayerId, itemId ItemId) {
-	matrix.playerHasItem[playerId][itemId] = No
+	matrix.hasItem[playerId][itemId] = No
 }
 
 func (matrix *PlayerItemMatrix) RecordPlayerDoesntHaveItemList(playerId PlayerId, itemIdList ItemIdList) {
@@ -71,7 +72,7 @@ func (matrix *PlayerItemMatrix) DeduceNoPlayerHasItem(itemId ItemId) (bool) {
 }
 
 func (matrix *PlayerItemMatrix) Print(playerId PlayerId) {
-	
+
 }
 
 func (matrix *PlayerItemMatrix) otherPlayers(playerId PlayerId) ([]PlayerId) {
@@ -79,4 +80,7 @@ func (matrix *PlayerItemMatrix) otherPlayers(playerId PlayerId) ([]PlayerId) {
 	others = append(others, matrix.playerIds[0:playerId] ...)
 	others = append(others, matrix.playerIds[playerId+1:] ...)
 	return others
+}
+
+func (deductions *Deductions) RecordEliminated(itemId ItemId) {
 }
