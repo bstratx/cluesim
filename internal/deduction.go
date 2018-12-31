@@ -3,7 +3,6 @@ package internal
 import (
 	"fmt"
 	"strings"
-	"os"
 )
 
 type Deductions struct {
@@ -69,7 +68,6 @@ func (deductions *Deductions) RecordQuestionResponses(question *Question) {
 			}
 		}
 	}
-	deductions.analyze()
 }
 
 func (deductions *Deductions) GetEliminatedItems() (ItemIdList) {
@@ -91,18 +89,20 @@ func (deductions *Deductions) indeterminatePlayerItem(playerId PlayerId, itemId 
 		deductions.matrix.hasItem[playerId][itemId] == No)
 }
 
-func (deductions *Deductions) analyze() {
-	secrets, solved := deductions.deduceSecrets()
-	if solved {
-		fmt.Print("Solved!!! - ")
-		for _, secret := range secrets {
-			fmt.Print(" ")
-			fmt.Print(GetItemName(ItemId(secret)))
-		}
-		fmt.Println()
-		deductions.Print()
-		os.Exit(0)
+func (deductions *Deductions) PrintSolution(secrets map[ItemType]ItemId) {
+	fmt.Print("Solved!!! By Player ")
+	fmt.Print(deductions.thisPlayerId)
+	fmt.Print(" - ")
+	for _, secret := range secrets {
+		fmt.Print(" ")
+		fmt.Print(GetItemName(ItemId(secret)))
 	}
+	fmt.Println()
+}
+
+func (deductions *Deductions) HasSolution() (map[ItemType]ItemId, bool){
+	secrets, solved := deductions.deduceSecrets()
+	return secrets, solved
 }
 
 func (deductions *Deductions) eliminateItem(itemId ItemId) {

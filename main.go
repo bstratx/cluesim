@@ -8,18 +8,28 @@ import (
 )
 
 func main() {
-	rand.Seed(time.Now().UTC().Unix())
-	secrets, remainingItems := internal.PickSecretItems()
+	rand.Seed(time.Now().UTC().UnixNano())
+	hiddenSecrets, remainingItems := internal.PickSecretItems()
 	players := createPlayers(remainingItems)
-	secrets.PrintItems("Secret Items: ", "\n")
+	hiddenSecrets.PrintItems("Secret Items: ", "\n")
 	for _, player := range players {
 		player.Print()
 	}
-	for rounds := 1; rounds < 10; rounds++ {
+
+	solved := false
+	var secrets map[internal.ItemType]internal.ItemId
+	for rounds := 1; !solved && rounds < 10; rounds++ {
 		fmt.Println()
 		fmt.Print("Round ")
 		fmt.Println(rounds)
 		for _, player := range players {
+
+			secrets, solved = player.Deductions.HasSolution()
+			if solved {
+				player.Deductions.PrintSolution(secrets)
+				break
+			}
+
 			question, err := player.PoseQuestion()
 			if err == nil {
 				question.Responses = question.RespondToQuestion(players)
@@ -28,10 +38,25 @@ func main() {
 					player.Deductions.RecordQuestionResponses(question)
 				}
 			}
+
+		}
+
+	}
+	fmt.Println()
+	fmt.Println("------- SOLUTION -----------")
+	for _, player := range players {
+		_, solved := player.Deductions.HasSolution()
+		if solved {
+			player.Deductions.Print()
 		}
 	}
+	fmt.Println()
+	fmt.Println("\n------- NO SOLUTION -----------")
 	for _, player := range players {
-		player.Deductions.Print()
+		_, solved := player.Deductions.HasSolution()
+		if !solved {
+			player.Deductions.Print()
+		}
 	}
 }
 
