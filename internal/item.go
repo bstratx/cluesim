@@ -11,6 +11,7 @@ const (
 	Character ItemType = iota
 	Weapon
 	Room
+	AllItems
 )
 
 type ItemId int
@@ -53,7 +54,7 @@ type Item struct {
 
 type ItemIdList []ItemId
 
-var allItems = []Item{
+var itemDetails = []Item{
 	{Scarlett, Character, "Miss Scarlett"},
 	{Mustard, Character, "Col. Mustard"},
 	{White, Character, "Mrs. White"},
@@ -80,6 +81,7 @@ var allItems = []Item{
 var characters = selectItemsOfType(Character)
 var weapons = selectItemsOfType(Weapon)
 var rooms = selectItemsOfType(Room)
+var allItems = selectItemsOfType(AllItems)
 
 func GetItemsOfType(itemType ItemType) (ItemIdList) {
 	var empty ItemIdList
@@ -90,6 +92,8 @@ func GetItemsOfType(itemType ItemType) (ItemIdList) {
 		return weapons
 	case Room:
 		return rooms
+	case AllItems:
+		return allItems
 	default:
 		return empty
 	}
@@ -101,6 +105,10 @@ func IsItemOfType(itemId ItemId, itemType ItemType) (bool) {
 		return false
 	}
 	return item.Type == itemType
+}
+
+func GetItemType(itemId ItemId) (ItemType) {
+	return getItem(itemId).Type
 }
 
 func GetItemName(itemId ItemId) (string) {
@@ -122,7 +130,16 @@ func PickSecretItems() (ItemIdList, ItemIdList) {
 func GetRandomItem(itemType ItemType) (ItemId) {
 	items := GetItemsOfType(itemType)
 	randItemIndex := items[rand.Intn(len(items))]
-	return allItems[randItemIndex].Id
+	return itemDetails[randItemIndex].Id
+}
+
+func GetRelevantItem(itemType ItemType, eliminated ItemIdList) (ItemId) {
+	itemsOfType := GetItemsOfType(itemType)
+	for _, itemId := range eliminated {
+		itemsOfType = removeItem(itemsOfType,itemId)
+	}
+	randItemIndex := itemsOfType[rand.Intn(len(itemsOfType))]
+	return itemDetails[randItemIndex].Id
 }
 
 func (itemIds ItemIdList) PrintItems(header string, trailer string) {
@@ -137,7 +154,7 @@ func (itemIds ItemIdList) PrintItems(header string, trailer string) {
 }
 
 func getItem(itemId ItemId) (*Item) {
-	for _, item := range allItems {
+	for _, item := range itemDetails {
 		if item.Id == itemId {
 			return &item
 		}
@@ -146,9 +163,9 @@ func getItem(itemId ItemId) (*Item) {
 }
 
 func getShuffledItemIdList() (ItemIdList) {
-	shuffled := make(ItemIdList, len(allItems))
-	for i := 0; i < len(allItems); i++ {
-		shuffled[i] = allItems[i].Id
+	shuffled := make(ItemIdList, len(itemDetails))
+	for i := 0; i < len(itemDetails); i++ {
+		shuffled[i] = itemDetails[i].Id
 	}
 	rand.Shuffle(len(shuffled), func(i, j int) {
 		shuffled[i], shuffled[j] = shuffled[j], shuffled[i]
@@ -170,8 +187,8 @@ func removeItem(itemList ItemIdList, removeItem ItemId) (ItemIdList) {
 
 func selectItemsOfType(itemType ItemType) (ItemIdList) {
 	var itemsOfType []ItemId
-	for _, item := range allItems {
-		if item.Type == itemType {
+	for _, item := range itemDetails {
+		if itemType == item.Type || itemType == AllItems {
 			itemsOfType = append(itemsOfType, item.Id)
 		}
 	}

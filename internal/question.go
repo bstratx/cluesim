@@ -60,7 +60,7 @@ func (question *Question) Print(players []Player) {
 		responder := players[response.ResponderId].Name
 		var itemShown string
 		if response.ItemShown == nil {
-			itemShown = "I can't disprove that"
+			itemShown = "nothing"
 		} else {
 			itemShown = fmt.Sprintf("shows %s", GetItemName(*response.ItemShown))
 		}
