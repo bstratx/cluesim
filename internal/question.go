@@ -18,14 +18,14 @@ type Response struct {
 
 func createQuestion(playerId PlayerId, itemIds []ItemId) (*Question, error) {
 	question := &Question{playerId, itemIds, nil}
-	if question.IsValid() {
+	if question.isValid() {
 		return question, nil
 	} else {
 		return nil, errors.New("invalid question")
 	}
 }
 
-func (question *Question) IsValid() (bool) {
+func (question *Question) isValid() (bool) {
 	return IsItemOfType(question.ItemIds[Character], Character) &&
 		IsItemOfType(question.ItemIds[Weapon], Weapon) &&
 		IsItemOfType(question.ItemIds[Room], Room)

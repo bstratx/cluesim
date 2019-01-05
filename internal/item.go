@@ -14,6 +14,12 @@ const (
 	AllItems
 )
 
+var ItemTypes = []ItemType{
+	Character,
+	Weapon,
+	Room,
+}
+
 type ItemId int
 
 const (
@@ -39,12 +45,6 @@ const (
 	Lounge
 	Study
 )
-
-var ItemTypes = []ItemType{
-	Character,
-	Weapon,
-	Room,
-}
 
 type Item struct {
 	Id   ItemId

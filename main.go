@@ -1,7 +1,7 @@
 package main
 
 import (
-	"project/clue/internal"
+	"github.com/bstratx/cluesim/internal"
 	"time"
 	"math/rand"
 	"fmt"
